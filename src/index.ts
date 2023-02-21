@@ -75,7 +75,7 @@ export const updateVersions = async (
   const diffFilesArray = await getDiff();
   const packagesObj = await getPackages(process.cwd());
   const dependents = getDependentsGraph(packagesObj);
-  console.log("dependents:", dependents);
+  console.log("dependents in:", dependents);
 
   await updateVersions(diffFilesArray, dependents);
 
