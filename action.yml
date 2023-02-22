@@ -1,8 +1,8 @@
 name: "Align lock versions"
 description: "Align the lock file versions with the versions in package json in monorepo"
 inputs:
-  org:
-    description: "The organization that owns the packages"
+  packageScopeName:
+    description: "The scope name of the packages"
     required: true
     default: ""
 runs:
