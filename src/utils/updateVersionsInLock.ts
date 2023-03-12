@@ -29,9 +29,9 @@ export const updateVersionsInLock = async (
   dependentsMap: Map<string, { dependent: string; depType: string }[]>
 ) => {
   const packageScopeName = getInput("packageScopeName");
-  const changelogRegex = /packages\/([A-Za-z0-9]+)\/CHANGELOG\.md$/;
+  const changelogRegex = /packages\/([A-Za-z0-9-]+)\/CHANGELOG\.md$/;
   const packageNameWithPrefixRegex = new RegExp(
-    `^@${packageScopeName}\/([A-Za-z0-9]+)$`
+    `^@${packageScopeName}\/([A-Za-z0-9-]+)$`
   );
 
   for (const candidateDependencyChangelogFile of diffFilesArray) {

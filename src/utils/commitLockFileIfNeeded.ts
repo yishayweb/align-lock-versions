@@ -11,7 +11,11 @@ export const commitLockFileIfNeeded = async () => {
   if (isModifiedLockFileMatched) {
     console.log("commiting updated lock file to the pr");
     await exec("git", ["add", "pnpm-lock.yaml"]);
-    await exec("git", ["commit", "-m", "update lock file automatically"]);
+    await exec("git", [
+      "commit",
+      "-m",
+      "chore: update lock file automatically",
+    ]);
     await exec("git", ["push", "origin", "changeset-release/master"]);
   }
 };

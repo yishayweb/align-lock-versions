@@ -67,7 +67,11 @@ const commitLockFileIfNeeded = () => __awaiter(void 0, void 0, void 0, function*
     if (isModifiedLockFileMatched) {
         console.log("commiting updated lock file to the pr");
         yield (0, exec_1.exec)("git", ["add", "pnpm-lock.yaml"]);
-        yield (0, exec_1.exec)("git", ["commit", "-m", "update lock file automatically"]);
+        yield (0, exec_1.exec)("git", [
+            "commit",
+            "-m",
+            "chore: update lock file automatically",
+        ]);
         yield (0, exec_1.exec)("git", ["push", "origin", "changeset-release/master"]);
     }
 });
@@ -295,8 +299,8 @@ const runPackageManagerVersionUpdate = (dependentPackageToUpdate, dependencyName
 });
 const updateVersionsInLock = (diffFilesArray, dependentsMap) => __awaiter(void 0, void 0, void 0, function* () {
     const packageScopeName = (0, core_1.getInput)("packageScopeName");
-    const changelogRegex = /packages\/([A-Za-z0-9]+)\/CHANGELOG\.md$/;
-    const packageNameWithPrefixRegex = new RegExp(`^@${packageScopeName}\/([A-Za-z0-9]+)$`);
+    const changelogRegex = /packages\/([A-Za-z0-9-]+)\/CHANGELOG\.md$/;
+    const packageNameWithPrefixRegex = new RegExp(`^@${packageScopeName}\/([A-Za-z0-9-]+)$`);
     for (const candidateDependencyChangelogFile of diffFilesArray) {
         const isMatch = candidateDependencyChangelogFile.match(changelogRegex);
         if (isMatch) {
