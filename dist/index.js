@@ -47,6 +47,29 @@ const commitLockFileIfNeeded_1 = __nccwpck_require__(1879);
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -59,6 +82,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.commitLockFileIfNeeded = void 0;
 const exec_1 = __nccwpck_require__(1514);
+const github = __importStar(__nccwpck_require__(5438));
 const commitLockFileIfNeeded = () => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const branchStatus = yield (0, exec_1.getExecOutput)("git", ["status"]);
@@ -66,13 +90,17 @@ const commitLockFileIfNeeded = () => __awaiter(void 0, void 0, void 0, function*
     const isModifiedLockFileMatched = (_a = branchStatus === null || branchStatus === void 0 ? void 0 : branchStatus.stdout) === null || _a === void 0 ? void 0 : _a.match(modifiedLockFileRegex);
     if (isModifiedLockFileMatched) {
         console.log("commiting updated lock file to the pr");
+        const extendedBranchName = github.context.ref;
+        const branchName = extendedBranchName.replace("refs/heads/", "");
+        console.log("the branch name: ", github.context.ref);
+        console.log("branch name: ", branchName);
         yield (0, exec_1.exec)("git", ["add", "pnpm-lock.yaml"]);
         yield (0, exec_1.exec)("git", [
             "commit",
             "-m",
             "chore: update lock file automatically",
         ]);
-        yield (0, exec_1.exec)("git", ["push", "origin", "changeset-release/master"]);
+        yield (0, exec_1.exec)("git", ["push", "origin", `changeset-release/${branchName}`]);
     }
 });
 exports.commitLockFileIfNeeded = commitLockFileIfNeeded;
@@ -272,12 +300,15 @@ exports.getFilesDiffInPrBranch = void 0;
 const exec_1 = __nccwpck_require__(1514);
 const github = __importStar(__nccwpck_require__(5438));
 const getFilesDiffInPrBranch = () => __awaiter(void 0, void 0, void 0, function* () {
+    const extendedBranchName = github.context.ref;
+    const branchName = extendedBranchName.replace("refs/heads/", "");
+    console.log("the branch name: ", github.context.ref);
+    console.log("branch name: ", branchName);
     const diff = yield (0, exec_1.getExecOutput)("git", [
         "diff",
         "--name-only",
-        "origin/changeset-release/master..master",
+        `origin/changeset-release/${branchName}..${branchName}`,
     ]);
-    console.log("the branch name: ", github.context.ref);
     // this array includes the names of the files changed in the version branch compared to the master branch
     const filesArray = diff.stdout.split("\n");
     return filesArray;
